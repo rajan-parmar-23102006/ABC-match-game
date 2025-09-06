@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABC Match Game - Responsive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6a5acd;
+            --secondary: #9370db;
+            --accent: #ff8c00;
+            --light: #e6e6fa;
+            --success: #00c853;
+            --text: #2e2e2e;
+            --dark-bg: #1a1a2e;
+            --card-bg: #16213e;
+            --neon-blue: #00e5ff;
+            --neon-pink: #ff00ff;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, var(--dark-bg), #0f3460);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle linear infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+        }
+        
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            color: var(--neon-blue);
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            color: var(--light);
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+        }
+        
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            background: var(--glass-bg);
+            color: white;
+            border: 1px solid var(--glass-border);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, var(--secondary), var(--primary));
+        }
+        
+        .btn-success {
+            background: linear-gradient(to right, var(--success), #00e676);
+            border: none;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(to right, #ff5252, #ff1744);
+            border: none;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin: 25px 0;
+            background: var(--glass-bg);
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .info-box {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 120px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-box::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-pink));
+        }
+        
+        .info-label {
+            font-size: 0.9rem;
+            color: var(--light);
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .game-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin: 25px auto;
+            perspective: 1000px;
+        }
+        
+        .card {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(145deg, var(--card-bg), #1e2a4a);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            transform-style: preserve-3d;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transform: rotateY(0deg);
+        }
+        
+        .card:hover {
+            transform: scale(1.05) rotateY(5deg);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        .card.flipped {
+            background: linear-gradient(145deg, #ff9800, var(--accent));
+            transform: rotateY(180deg);
+        }
+        
+        .card.flipped .card-content {
+            transform: rotateY(180deg);
+        }
+        
+        .matched {
+            background: linear-gradient(145deg, var(--success), #00c853);
+            cursor: default;
+            transform: scale(0.95);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            animation: pulse 1s;
+        }
+        
+        .matched::after {
+            content: "✓";
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--success);
+            font-size: 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(0.95); }
+        }
+        
+        .card-content {
+            transition: transform 0.3s;
+            transform: rotateY(0deg);
+            backface-visibility: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            opacity: 0;
+            animation: confetti-fall 5s ease-in-out;
+            z-index: 1000;
+        }
+        
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Scoreboard Styles */
+        .scoreboard {
+            margin-top: 30px;
+            background: var(--glass-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+        }
+        
+        .scoreboard h2 {
+            color: var(--neon-pink);
+            margin-top: 0;
+            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-pink);
+            font-family: 'Fredoka One', cursive;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .scoreboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .scoreboard-table th, .scoreboard-table td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+        
+        .scoreboard-table th {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 600;
+        }
+        
+        .scoreboard-table tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .scoreboard-table tr:hover {
+            background-color: rgba(106, 90, 205, 0.2);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 50px;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-pink));
+            color: white;
+            font-size: 12px;
+            margin-left: 8px;
+            font-weight: 600;
+        }
+        
+        .trophy {
+            color: gold;
+            margin-right: 5px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--light);
+        }
+        
+        .modal-title {
+            color: var(--neon-blue);
+            margin-bottom: 20px;
+            font-family: 'Fredoka One', cursive;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-item {
+            background: var(--glass-bg);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neon-pink);
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            color: var(--light);
+            font-size: 0.9rem;
+        }
+        
+        .difficulty-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .difficulty-btn {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-bg);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .difficulty-btn.active {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border: none;
+        }
+        
+        /* Instructions */
+        .instructions {
+            text-align: left;
+            margin: 20px 0;
+            line-height: 1.6;
+        }
+        
+        .instructions li {
+            margin-bottom: 10px;
+        }
+        
+        /* Animations */
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px var(--neon-blue); }
+            50% { box-shadow: 0 0 20px var(--neon-blue); }
+            100% { box-shadow: 0 0 5px var(--neon-blue); }
+        }
+        
+        .glowing {
+            animation: glow 2s infinite;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .game-info {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .info-box {
+                flex: 1;
+                min-width: calc(50% - 15px);
+            }
+            
+            .card {
+                width: 70px;
+                height: 70px;
+                font-size: 24px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .scoreboard-table {
+                font-size: 14px;
+            }
+            
+            .scoreboard-table th, .scoreboard-table td {
+                padding: 8px 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .game-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .info-box {
+                min-width: 100%;
+            }
+            
+            .card {
+                width: 60px;
+                height: 60px;
+                font-size: 20px;
+            }
+            
+            .info-value {
+                font-size: 1.5rem;
+            }
+            
+            .difficulty-selector {
+                flex-wrap: wrap;
+            }
+            
+            .scoreboard-table {
+                font-size: 12px;
+            }
+            
+            .scoreboard-table th, .scoreboard-table td {
+                padding: 6px 8px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .card {
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
+            }
+            
+            .info-box {
+                padding: 10px 15px;
+            }
+            
+            .info-value {
+                font-size: 1.3rem;
+            }
+            
+            .scoreboard-table {
+                font-size: 11px;
+            }
+        }
+        
+        /* Landscape orientation adjustments */
+        @media (max-height: 600px) and (orientation: landscape) {
+            .container {
+                padding: 15px;
+                margin: 10px auto;
+            }
+            
+            .game-info {
+                margin: 15px 0;
+                padding: 10px;
+            }
+            
+            .card {
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
+            }
+            
+            .scoreboard {
+                margin-top: 20px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <h1>ABC MATCH MASTER</h1>
+        <p class="subtitle">Match uppercase letters to their lowercase pairs in record time!</p>
+        
+        <div class="game-controls">
+            <button class="btn btn-primary" id="start-btn">
+                <i class="fas fa-play"></i> Start Game
+            </button>
+            <button class="btn" id="pause-btn" disabled>
+                <i class="fas fa-pause"></i> Pause
+            </button>
+            <button class="btn" id="hint-btn">
+                <i class="fas fa-lightbulb"></i> Hint
+            </button>
+            <button class="btn btn-success" id="restart">
+                <i class="fas fa-redo"></i> Restart
+            </button>
+            <button class="btn" id="instructions-btn">
+                <i class="fas fa-question-circle"></i> How to Play
+            </button>
+        </div>
+        
+        <div class="difficulty-selector">
+            <div class="difficulty-btn active" data-difficulty="easy">Easy</div>
+            <div class="difficulty-btn" data-difficulty="medium">Medium</div>
+            <div class="difficulty-btn" data-difficulty="hard">Hard</div>
+        </div>
+        
+        <div class="game-info">
+            <div class="info-box">
+                <div class="info-label">Time</div>
+                <div class="info-value" id="time">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">Matches</div>
+                <div class="info-value" id="score">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">Moves</div>
+                <div class="info-value" id="moves">0</div>
+            </div>
+            <div class="info-box">
+                <div class="info-label">Hints Left</div>
+                <div class="info-value" id="hints">3</div>
+            </div>
+        </div>
+        
+        <div class="game-container" id="game"></div>
+        
+        <!-- Scoreboard Section -->
+        <div class="scoreboard">
+            <h2>Scoreboard <span class="badge" id="games-played">0</span></h2>
+            <table class="scoreboard-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Time</th>
+                        <th>Moves</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreboard-entries">
+                    <!-- Scores will be added here dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Instructions Modal -->
+    <div class="modal" id="instructions-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-instructions">&times;</span>
+            <h2 class="modal-title">How to Play</h2>
+            <div class="instructions">
+                <p><strong>ABC Match Master</strong> is a memory matching game where you need to match uppercase letters with their lowercase equivalents.</p>
+                <ul>
+                    <li>Click on cards to flip them and reveal letters</li>
+                    <li>Match uppercase letters (A-Z) with their lowercase pairs (a-z)</li>
+                    <li>Try to complete the game with the fewest moves and in the shortest time</li>
+                    <li>Use hints wisely - you only have 3 per game</li>
+                    <li>Choose difficulty level: Easy (10 pairs), Medium (20 pairs), or Hard (26 pairs)</li>
+                </ul>
+                <p>Your best scores will be saved to the scoreboard!</p>
+            </div>
+            <button class="btn btn-primary" id="start-from-instructions">Start Game</button>
+        </div>
+    </div>
+    
+    <!-- Game Over Modal -->
+    <div class="modal" id="gameover-modal">
+        <div class="modal-content">
+            <h2 class="modal-title">Congratulations!</h2>
+            <p>You've matched all the pairs!</p>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Time</div>
+                    <div class="stat-value" id="final-time">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Moves</div>
+                    <div class="stat-value" id="final-moves">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Matches</div>
+                    <div class="stat-value" id="final-matches">0</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Hints Used</div>
+                    <div class="stat-value" id="final-hints">0</div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" id="play-again">Play Again</button>
+            <button class="btn" id="view-scoreboard">View Scoreboard</button>
+        </div>
+    </div>
+
+    <script>
+        // Generate A-Z and a-z arrays
+        const uppercaseLetters = Array.from({length: 26}, (_, i) => String.fromCharCode(65 + i));
+        const lowercaseLetters = Array.from({length: 26}, (_, i) => String.fromCharCode(97 + i));
+        
+        // Game state variables
+        let selectedCards = [];
+        let matchedPairs = 0;
+        let moves = 0;
+        let timer = 0;
+        let timerInterval;
+        let gameActive = false;
+        let gamesPlayed = 0;
+        let hintsUsed = 0;
+        let hintsAvailable = 3;
+        let difficulty = 'easy';
+        let scores = JSON.parse(localStorage.getItem('abcMatchScores')) || [];
+        
+        // DOM elements
+        const gameContainer = document.getElementById('game');
+        const scoreElement = document.getElementById('score');
+        const movesElement = document.getElementById('moves');
+        const timeElement = document.getElementById('time');
+        const hintsElement = document.getElementById('hints');
+        const restartButton = document.getElementById('restart');
+        const startButton = document.getElementById('start-btn');
+        const pauseButton = document.getElementById('pause-btn');
+        const hintButton = document.getElementById('hint-btn');
+        const instructionsButton = document.getElementById('instructions-btn');
+        const gamesPlayedElement = document.getElementById('games-played');
+        const scoreboardEntries = document.getElementById('scoreboard-entries');
+        const instructionsModal = document.getElementById('instructions-modal');
+        const gameoverModal = document.getElementById('gameover-modal');
+        const difficultyButtons = document.querySelectorAll('.difficulty-btn');
+        
+        // Create stars for background
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            const starsCount = 150;
+            
+            for (let i = 0; i < starsCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                const size = Math.random() * 3;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                
+                starsContainer.appendChild(star);
+            }
+        }
+        
+        // Initialize game
+        function initGame() {
+            clearInterval(timerInterval);
+            timer = 0;
+            moves = 0;
+            matchedPairs = 0;
+            selectedCards = [];
+            hintsUsed = 0;
+            hintsAvailable = 3;
+            gameActive = false;
+            
+            updateScore();
+            updateHints();
+            createGame();
+            updateScoreboard();
+            
+            startButton.disabled = false;
+            pauseButton.disabled = true;
+            pauseButton.innerHTML = '<i class="fas fa-pause"></i> Pause';
+        }
+        
+        // Start the game
+        function startGame() {
+            if (!gameActive) {
+                gameActive = true;
+                startTimer();
+                
+                startButton.disabled = true;
+                pauseButton.disabled = false;
+            }
+        }
+        
+        // Pause the game
+        function pauseGame() {
+            if (gameActive) {
+                gameActive = false;
+                clearInterval(timerInterval);
+                pauseButton.innerHTML = '<i class="fas fa-play"></i> Resume';
+            } else {
+                gameActive = true;
+                startTimer();
+                pauseButton.innerHTML = '<i class="fas fa-pause"></i> Pause';
+            }
+        }
+        
+        // Create game board based on difficulty
+        function createGame() {
+            let pairsToUse;
+            
+            switch(difficulty) {
+                case 'easy':
+                    pairsToUse = 10;
+                    break;
+                case 'medium':
+                    pairsToUse = 20;
+                    break;
+                case 'hard':
+                    pairsToUse = 26;
+                    break;
+                default:
+                    pairsToUse = 10;
+            }
+            
+            const selectedUppercase = uppercaseLetters.slice(0, pairsToUse);
+            const selectedLowercase = lowercaseLetters.slice(0, pairsToUse);
+            const letters = [...selectedUppercase, ...selectedLowercase];
+            
+            const shuffledLetters = [...letters].sort(() => Math.random() - 0.5);
+            gameContainer.innerHTML = '';
+            
+            shuffledLetters.forEach((letter, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.dataset.value = letter.toLowerCase();
+                card.dataset.index = index;
+                
+                const cardContent = document.createElement('div');
+                cardContent.className = 'card-content';
+                cardContent.textContent = letter;
+                
+                card.appendChild(cardContent);
+                card.addEventListener('click', () => selectCard(card));
+                gameContainer.appendChild(card);
+            });
+        }
+        
+        // Select a card
+        function selectCard(card) {
+            if (!gameActive || card.classList.contains('matched') || selectedCards.length >= 2 || selectedCards.includes(card)) {
+                return;
+            }
+            
+            card.classList.add('flipped');
+            selectedCards.push(card);
+            
+            if (selectedCards.length === 2) {
+                moves++;
+                movesElement.textContent = moves;
+                setTimeout(checkMatch, 500);
+            }
+        }
+        
+        // Check if cards match
+        function checkMatch() {
+            const [card1, card2] = selectedCards;
+            
+            if (card1.dataset.value === card2.dataset.value) {
+                card1.classList.add('matched');
+                card2.classList.add('matched');
+                matchedPairs++;
+                updateScore();
+                
+                // Add celebration for matches
+                if (matchedPairs % 5 === 0) {
+                    createConfetti();
+                }
+                
+                const totalPairs = difficulty === 'easy' ? 10 : difficulty === 'medium' ? 20 : 26;
+                if (matchedPairs === totalPairs) {
+                    endGame();
+                }
+            } else {
+                card1.classList.remove('flipped');
+                card2.classList.remove('flipped');
+            }
+            
+            selectedCards = [];
+        }
+        
+        // Provide hint to player
+        function provideHint() {
+            if (hintsAvailable <= 0 || !gameActive) return;
+            
+            hintsAvailable--;
+            hintsUsed++;
+            updateHints();
+            
+            // Get all non-matched cards
+            const cards = Array.from(document.querySelectorAll('.card:not(.matched)'));
+            // Filter out already flipped cards
+            const unflippedCards = cards.filter(card => !card.classList.contains('flipped'));
+            
+            if (unflippedCards.length < 2) return;
+            
+            // Find a matching pair
+            let firstCard = null;
+            let secondCard = null;
+            
+            for (let i = 0; i < unflippedCards.length; i++) {
+                if (firstCard && secondCard) break;
+                
+                for (let j = i + 1; j < unflippedCards.length; j++) {
+                    if (unflippedCards[i].dataset.value === unflippedCards[j].dataset.value) {
+                        firstCard = unflippedCards[i];
+                        secondCard = unflippedCards[j];
+                        break;
+                    }
+                }
+            }
+            
+            if (firstCard && secondCard) {
+                // Briefly show the hint
+                firstCard.classList.add('flipped', 'glowing');
+                secondCard.classList.add('flipped', 'glowing');
+                
+                setTimeout(() => {
+                    firstCard.classList.remove('flipped', 'glowing');
+                    secondCard.classList.remove('flipped', 'glowing');
+                }, 1000);
+            }
+        }
+        
+        // Update score display
+        function updateScore() {
+            scoreElement.textContent = matchedPairs;
+        }
+        
+        // Update hints display
+        function updateHints() {
+            hintsElement.textContent = hintsAvailable;
+        }
+        
+        // Timer function
+        function startTimer() {
+            timeElement.textContent = timer;
+            timerInterval = setInterval(() => {
+                timer++;
+                timeElement.textContent = timer;
+            }, 1000);
+        }
+        
+        // End game function
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            createConfetti(100);
+            
+            // Save the score
+            const gameResult = {
+                time: timer,
+                moves: moves,
+                hints: hintsUsed,
+                difficulty: difficulty,
+                date: new Date().toLocaleDateString(),
+                timestamp: new Date().getTime()
+            };
+            
+            scores.push(gameResult);
+            gamesPlayed++;
+            
+            // Keep only top 10 scores
+            if (scores.length > 10) {
+                scores = scores.slice(scores.length - 10);
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('abcMatchScores', JSON.stringify(scores));
+            
+            // Update scoreboard
+            updateScoreboard();
+            
+            // Show game over modal
+            document.getElementById('final-time').textContent = `${timer}s`;
+            document.getElementById('final-moves').textContent = moves;
+            
+            const totalPairs = difficulty === 'easy' ? 10 : difficulty === 'medium' ? 20 : 26;
+            document.getElementById('final-matches').textContent = `${matchedPairs}/${totalPairs}`;
+            
+            document.getElementById('final-hints').textContent = hintsUsed;
+            
+            setTimeout(() => {
+                gameoverModal.style.display = 'flex';
+            }, 1000);
+        }
+        
+        // Update scoreboard display
+        function updateScoreboard() {
+            gamesPlayedElement.textContent = gamesPlayed;
+            scoreboardEntries.innerHTML = '';
+            
+            // Sort scores by time (ascending) and moves (ascending)
+            const sortedScores = [...scores].sort((a, b) => {
+                if (a.time === b.time) {
+                    return a.moves - b.moves;
+                }
+                return a.time - b.time;
+            });
+            
+            sortedScores.forEach((score, index) => {
+                const row = document.createElement('tr');
+                
+                const rankCell = document.createElement('td');
+                if (index === 0) {
+                    rankCell.innerHTML = `<i class="fas fa-trophy trophy"></i> ${index + 1}`;
+                } else {
+                    rankCell.textContent = index + 1;
+                }
+                
+                const timeCell = document.createElement('td');
+                timeCell.textContent = `${score.time}s`;
+                
+                const movesCell = document.createElement('td');
+                movesCell.textContent = score.moves;
+                
+                const dateCell = document.createElement('td');
+                dateCell.textContent = score.date;
+                
+                row.appendChild(rankCell);
+                row.appendChild(timeCell);
+                row.appendChild(movesCell);
+                row.appendChild(dateCell);
+                
+                scoreboardEntries.appendChild(row);
+            });
+        }
+        
+        // Confetti animation
+        function createConfetti(count = 30) {
+            for (let i = 0; i < count; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 60%)`;
+                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+        
+        // Set difficulty
+        function setDifficulty(level) {
+            difficulty = level;
+            difficultyButtons.forEach(btn => {
+                if (btn.dataset.difficulty === level) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            initGame();
+        }
+        
+        // Event listeners
+        restartButton.addEventListener('click', initGame);
+        startButton.addEventListener('click', startGame);
+        pauseButton.addEventListener('click', pauseGame);
+        hintButton.addEventListener('click', provideHint);
+        
+        instructionsButton.addEventListener('click', () => {
+            instructionsModal.style.display = 'flex';
+        });
+        
+        document.getElementById('close-instructions').addEventListener('click', () => {
+            instructionsModal.style.display = 'none';
+        });
+        
+        document.getElementById('start-from-instructions').addEventListener('click', () => {
+            instructionsModal.style.display = 'none';
+            startGame();
+        });
+        
+        document.getElementById('play-again').addEventListener('click', () => {
+            gameoverModal.style.display = 'none';
+            initGame();
+            startGame();
+        });
+        
+        document.getElementById('view-scoreboard').addEventListener('click', () => {
+            gameoverModal.style.display = 'none';
+        });
+        
+        difficultyButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                setDifficulty(btn.dataset.difficulty);
+            });
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === instructionsModal) {
+                instructionsModal.style.display = 'none';
+            }
+            if (e.target === gameoverModal) {
+                gameoverModal.style.display = 'none';
+            }
+        });
+        
+        // Initialize the game
+        window.onload = function() {
+            createStars();
+            initGame();
+            updateScoreboard();
+        };
+    </script>
+</body>
+</html>
